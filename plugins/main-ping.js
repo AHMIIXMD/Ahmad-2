@@ -1,5 +1,36 @@
 const config = require('../config');
 const { cmd, commands } = require('../command');
+const path = require('path');
+const os = require("os");
+const fs = require('fs');
+const { runtime } = require('../lib/functions');
+const axios = require('axios');
+
+// Constant Channel JID
+const CHANNEL_JID = '120363429017707564@newsletter';
+const MAIN_IMAGE = "https://files.catbox.moe/15j4gb.jpg";
+
+// Helper function for small caps text
+const toSmallCaps = (text) => {
+    if (!text || typeof text !== 'string') return '';
+    const smallCapsMap = {
+        'a': 'ᴀ', 'b': 'ʙ', 'c': 'ᴄ', 'd': 'ᴅ', 'e': 'ᴇ', 'f': 'ғ', 'g': 'ɢ', 'h': 'ʜ', 'i': 'ɪ',
+        'j': 'ᴊ', 'k': 'ᴋ', 'l': 'ʟ', 'm': 'ᴍ', 'n': 'ɴ', 'o': 'ᴏ', 'p': 'ᴘ', 'q': 'ǫ', 'r': 'ʀ',
+        's': 's', 't': 'ᴛ', 'u': 'ᴜ', 'v': 'ᴠ', 'w': 'ᴡ', 'x': 'x', 'y': 'ʏ', 'z': 'ᴢ'
+    };
+    return text.toLowerCase().split('').map(char => smallCapsMap[char] || char).join('');
+};
+
+// --- CUTE QUEEN CATEGORY STYLE ---
+const formatCategory = (category, cmds) => {
+    const validCmds = cmds.filter(cmd => cmd.pattern && cmd.pattern.trim() !== '');
+    if (validCmds.length === 0) return ''; 
+    
+    let title = `\n╭━━━⪨ 🌸 *${category.toUpperCase()}* 🌸 ⪩━━━╮\n`;
+    let body = validCmds.map(cmd => `  🌸 ‣ \`.${toSmallCaps(cmd.pattern)}\``).join('\n');
+    let footer = `\n╰━━━━━━━━━━━━━━━━━━━━━━╯\n`;
+    return `${title}${body}${footer}`;
+};
 
 // --- PING COMMAND (QUEEN-MD CUTE UI) ---
 cmd({
@@ -18,22 +49,13 @@ async (conn, mek, m, { from, quoted, sender, reply }) => {
         const reactionEmojis = ['🎀', '👑', '🌸', '🦋', '💖', '✨'];
         const reactionEmoji = reactionEmojis[Math.floor(Math.random() * reactionEmojis.length)];
 
-        // Quick reaction
         await conn.sendMessage(from, {
             react: { text: reactionEmoji, key: mek.key }
         });
 
-        // ✅ Channel Auto Unfollow
-        try {
-            await conn.newsletterUnfollow('120363430297481707@newsletter');
-        } catch (err) {
-            console.log("Unfollow error:", err.message);
-        }
-
         const end = Date.now();
         const responseTime = end - start;
 
-        // Exact Custom Template
         const text = `
 ╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
   
@@ -53,7 +75,7 @@ async (conn, mek, m, { from, quoted, sender, reply }) => {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363428720051298@newsletter',
+                    newsletterJid: CHANNEL_JID,
                     newsletterName: "QUEEN-MD TECH 🦋",
                     serverMessageId: 143
                 }
@@ -113,7 +135,7 @@ async (conn, mek, m, { from, reply }) => {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363408512260657@newsletter',
+                    newsletterJid: CHANNEL_JID,
                     newsletterName: "QUEEN-MD TECH 🦋",
                     serverMessageId: 143
                 }
@@ -124,4 +146,65 @@ async (conn, mek, m, { from, reply }) => {
         console.log(e);
         reply(`⚠️ Error: ${e.message}`);
     }
+});
+
+
+// --- MENU COMMAND (WITH CUSTOM IMAGE & NEW CHANNEL) ---
+cmd({
+    pattern: "menu",
+    alias: ["m", "help", "allmenu"],
+    category: "main",
+    react: "🎀",
+    filename: __filename
+},
+async (conn, mek, m, { from, pushname, reply }) => {
+    try {
+        const categories = [...new Set(Object.values(commands).map(c => c.category))].filter(Boolean);
+        let menuSections = '';
+        categories.forEach(cat => {
+            const catCmds = Object.values(commands).filter(c => c.category === cat);
+            menuSections += formatCategory(cat, catCmds);
+        });
+
+        const uptime = runtime(process.uptime());
+
+        let dec = `
+╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
+  
+  👑 ‣ 𝐎𝐰𝐧𝐞𝐫  : ${config.OWNER_NAME || "Queen Owner"}
+  ⏰ ‣ 𝐔𝐩𝐭𝐢𝐦𝐞 : ${uptime}
+  📂 ‣ 𝐂𝐦𝐝𝐬   : ${Object.keys(commands).length}
+  🦋 ‣ 𝐌𝐨𝐝𝐞   : ${config.MODE || "Public"}
+  💖 ‣ 𝐒𝐭𝐚𝐭𝐮𝐬 : Active & Cute 💕
+
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+${menuSections}
+> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
+
+        // 1. Menu Image Send
+        await conn.sendMessage(from, { 
+            image: { url: MAIN_IMAGE },
+            caption: dec.trim(), 
+            contextInfo: { 
+                mentionedJid: [m.sender], 
+                forwardingScore: 999, 
+                isForwarded: true, 
+                forwardedNewsletterMessageInfo: { 
+                    newsletterJid: CHANNEL_JID, 
+                    newsletterName: "QUEEN-MD TECH 🦋", 
+                    serverMessageId: 143 
+                } 
+            } 
+        }, { quoted: mek });
+
+        // 2. Audio File Send
+        await conn.sendMessage(from, {
+            audio: { url: "https://files.catbox.moe/hoi9ur.mp3" },
+            mimetype: 'audio/mpeg',
+            ptt: false
+        }, { quoted: mek });
+
+    } catch (e) { 
+        reply(`⚠️ Error: ${e.message}`); 
+    } 
 });
