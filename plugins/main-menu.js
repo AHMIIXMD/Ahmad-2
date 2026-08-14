@@ -61,14 +61,12 @@ async (conn, mek, m, { from, pushname, reply }) => {
 ${menuSections}
 > 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
 
-        // Video URL Selection
-        let videoToUse = "https://files.catbox.moe/2owh18.mp4";
+        // Updated Custom Image Link (Purani video URL bilkul remove kar di hai)
+        const mainImage = "https://files.catbox.moe/15j4gb.jpg";
 
-        // 1. Menu Video Send (GIF Looping Mode)
+        // 1. Menu Image Send
         await conn.sendMessage(from, { 
-            video: { url: videoToUse },
-            mimetype: 'video/mp4',
-            gifPlayback: true,
+            image: { url: mainImage },
             caption: dec.trim(), 
             contextInfo: { 
                 mentionedJid: [m.sender], 
@@ -82,7 +80,7 @@ ${menuSections}
             } 
         }, { quoted: mek });
 
-        // 2. Audio File Send (As Audio, not Voice Note)
+        // 2. Audio File Send
         await conn.sendMessage(from, {
             audio: { url: "https://files.catbox.moe/hoi9ur.mp3" },
             mimetype: 'audio/mpeg',
