@@ -6,8 +6,9 @@ const fs = require('fs');
 const { runtime } = require('../lib/functions');
 const axios = require('axios');
 
-// Constant Channel JID
+// Constant Channel JID & Name (Har jaga yahi use hoga)
 const CHANNEL_JID = '120363429017707564@newsletter';
+const CHANNEL_NAME = "QUEEN-MD TECH 🦋";
 const MAIN_IMAGE = "https://files.catbox.moe/15j4gb.jpg";
 
 // Helper function for small caps text
@@ -32,7 +33,7 @@ const formatCategory = (category, cmds) => {
     return `${title}${body}${footer}`;
 };
 
-// --- PING COMMAND (QUEEN-MD CUTE UI) ---
+// --- PING COMMAND ---
 cmd({
     pattern: "ping",
     alias: ["speed", "pong"],
@@ -76,7 +77,7 @@ async (conn, mek, m, { from, quoted, sender, reply }) => {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: CHANNEL_JID,
-                    newsletterName: "QUEEN-MD TECH 🦋",
+                    newsletterName: CHANNEL_NAME,
                     serverMessageId: 143
                 }
             }
@@ -88,8 +89,7 @@ async (conn, mek, m, { from, quoted, sender, reply }) => {
     }
 });
 
-
-// --- PING2 COMMAND (QUEEN DASHBOARD UI) ---
+// --- PING2 COMMAND ---
 cmd({
     pattern: "ping2",
     desc: "Check bot's response time with dashboard view.",
@@ -127,7 +127,7 @@ async (conn, mek, m, { from, reply }) => {
 
 ╰━━━━━━━━━━━━━━━━━━━━━━╯
 
-> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
+> 🎀 *ᴘᴏᴡᴇʀᴇ丁 ʙʏ QUEEN🦋*`;
 
         await conn.sendMessage(from, { 
             text: msg.trim(),
@@ -136,7 +136,7 @@ async (conn, mek, m, { from, reply }) => {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: CHANNEL_JID,
-                    newsletterName: "QUEEN-MD TECH 🦋",
+                    newsletterName: CHANNEL_NAME,
                     serverMessageId: 143
                 }
             }
@@ -148,8 +148,7 @@ async (conn, mek, m, { from, reply }) => {
     }
 });
 
-
-// --- MENU COMMAND (WITH CUSTOM IMAGE & NEW CHANNEL) ---
+// --- MENU COMMAND ---
 cmd({
     pattern: "menu",
     alias: ["m", "help", "allmenu"],
@@ -191,7 +190,7 @@ ${menuSections}
                 isForwarded: true, 
                 forwardedNewsletterMessageInfo: { 
                     newsletterJid: CHANNEL_JID, 
-                    newsletterName: "QUEEN-MD TECH 🦋", 
+                    newsletterName: CHANNEL_NAME, 
                     serverMessageId: 143 
                 } 
             } 
