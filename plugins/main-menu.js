@@ -61,7 +61,7 @@ async (conn, mek, m, { from, pushname, reply }) => {
 ${menuSections}
 > 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
 
-        // Updated Custom Image Link (Purani video URL bilkul remove kar di hai)
+        // Updated Custom Image Link
         const mainImage = "https://files.catbox.moe/15j4gb.jpg";
 
         // 1. Menu Image Send
@@ -73,7 +73,7 @@ ${menuSections}
                 forwardingScore: 999, 
                 isForwarded: true, 
                 forwardedNewsletterMessageInfo: { 
-                    newsletterJid: '120363428720051298@newsletter', 
+                    newsletterJid: '120363429017707564@newsletter', 
                     newsletterName: "QUEEN-MD TECH 🦋", 
                     serverMessageId: 143 
                 } 
