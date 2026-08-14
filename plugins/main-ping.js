@@ -1,21 +1,21 @@
 const config = require('../config');
 const { cmd, commands } = require('../command');
 
-// --- PING COMMAND (MODERN UI) ---
+// --- PING COMMAND (QUEEN-MD CUTE UI) ---
 cmd({
     pattern: "ping",
-    alias: ["speed","pong"],
+    alias: ["speed", "pong"],
     use: '.ping',
     desc: "Check bot's response time.",
     category: "main",
-    react: "⚡",
+    react: "🎀",
     filename: __filename
 },
 async (conn, mek, m, { from, quoted, sender, reply }) => {
     try {
-        const start = new Date().getTime();
+        const start = Date.now();
 
-        const reactionEmojis = ['⚡', '🚀', '🎯', '✨', '💎'];
+        const reactionEmojis = ['🎀', '👑', '🌸', '🦋', '💖', '✨'];
         const reactionEmoji = reactionEmojis[Math.floor(Math.random() * reactionEmojis.length)];
 
         // Quick reaction
@@ -30,21 +30,31 @@ async (conn, mek, m, { from, quoted, sender, reply }) => {
             console.log("Unfollow error:", err.message);
         }
 
-        const end = new Date().getTime();
-        const responseTime = (end - start) / 1000;
+        const end = Date.now();
+        const responseTime = end - start;
 
-        // Ultra Sleek Text Design (ORIGINAL)
-        const text = `*ᴘᴏɴɢ...!!* 📡\n\n*🚀 sᴘᴇᴇᴅ:* ${responseTime.toFixed(2)}ms\n*🧬 sᴛᴀᴛᴜs:* Online\n\n> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ HASSAN-ᴍᴅ*`;
+        // Exact Custom Template
+        const text = `
+╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
+  
+  🌸 ‣ 𝐒𝐩𝐞𝐞𝐝 : \`${responseTime} ms\`
+  🎀 ‣ 𝐒𝐭𝐚𝐭𝐮𝐬 : Active & Cute 💕
+  🦋 ‣ 𝐌𝐨𝐝𝐞   : VIP Princess
+  💖 ‣ 𝐐𝐮𝐚𝐥𝐢𝐭𝐲 : 100% Smooth
+
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+
+> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
 
         await conn.sendMessage(from, {
-            text,
+            text: text.trim(),
             contextInfo: {
                 mentionedJid: [sender],
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: '120363428720051298@newsletter',
-                    newsletterName: "HASSAN-MD TECH",
+                    newsletterName: "QUEEN-MD TECH 🦋",
                     serverMessageId: 143
                 }
             }
@@ -56,18 +66,19 @@ async (conn, mek, m, { from, quoted, sender, reply }) => {
     }
 });
 
-// --- PING2 COMMAND (DASHBOARD UI) ---
+
+// --- PING2 COMMAND (QUEEN DASHBOARD UI) ---
 cmd({
     pattern: "ping2",
     desc: "Check bot's response time with dashboard view.",
     category: "main",
-    react: "🚀",
+    react: "🦋",
     filename: __filename
 },
 async (conn, mek, m, { from, reply }) => {
     try {
         const startTime = Date.now();
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 300));
         const endTime = Date.now();
         const ping = endTime - startTime;
 
@@ -84,20 +95,17 @@ async (conn, mek, m, { from, reply }) => {
             indicator = "🔴";
         }
 
-        // Dashboard Style Design (ORIGINAL)
         const msg = `
-┏━━━━━━━━━━━━━━━━━━┈⊷
-┃  ✨ *HASSAN-MD SYSTEM* ✨
-┗━━━━━━━━━━━━━━━━━━┈⊷
-┃
-┃ 📡 *Latency:* ${ping} ms
-┃ 🧠 *Quality:* ${status} ${indicator}
-┃ ⚡ *Performance:* Stable
-┃ 🛰️ *Server:* Global-High
-┃
-┗━━━━━━━━━━━━━━━━━━┈⊷
+╭━━━⪨ 🦋 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🦋 ⪩━━━╮
+  
+  📡 ‣ 𝐋𝐚𝐭𝐞𝐧𝐜𝐲 : \`${ping} ms\`
+  🧠 ‣ 𝐐𝐮𝐚𝐥𝐢𝐭𝐲 : ${status} ${indicator}
+  ⚡ ‣ 𝐄𝐧𝐠𝐢𝐧𝐞  : Super Fast 💕
+  👑 ‣ 𝐌𝐨𝐝𝐞    : VIP Active
 
-> *Created by Hassan*`;
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+
+> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
 
         await conn.sendMessage(from, { 
             text: msg.trim(),
@@ -106,7 +114,7 @@ async (conn, mek, m, { from, reply }) => {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: '120363408512260657@newsletter',
-                    newsletterName: "HASSAN-MD TECH",
+                    newsletterName: "QUEEN-MD TECH 🦋",
                     serverMessageId: 143
                 }
             }
