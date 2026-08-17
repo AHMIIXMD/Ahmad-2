@@ -1,10 +1,14 @@
-const config = require('../config');
-const { cmd, commands } = require('../command');
-const path = require('path');
-const os = require("os");
-const fs = require('fs');
-const { runtime } = require('../lib/functions');
-const axios = require('axios');
+import config from '../config.js';
+import { cmd, commands } from '../command.js';
+import path from 'path';
+import os from "os";
+import fs from 'fs';
+import { runtime } from '../lib/functions.js';
+import axios from 'axios';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Helper function for small caps text
 const toSmallCaps = (text) => {
@@ -17,14 +21,15 @@ const toSmallCaps = (text) => {
     return text.toLowerCase().split('').map(char => smallCapsMap[char] || char).join('');
 };
 
-// --- CUTE QUEEN CATEGORY STYLE ---
+// --- SIMPLE CLEAN CATEGORY DESIGN ---
 const formatCategory = (category, cmds) => {
     const validCmds = cmds.filter(cmd => cmd.pattern && cmd.pattern.trim() !== '');
     if (validCmds.length === 0) return ''; 
     
-    let title = `\n╭━━━⪨ 🌸 *${category.toUpperCase()}* 🌸 ⪩━━━╮\n`;
-    let body = validCmds.map(cmd => `  🌸 ‣ \`.${toSmallCaps(cmd.pattern)}\``).join('\n');
-    let footer = `\n╰━━━━━━━━━━━━━━━━━━━━━━╯\n`;
+    let title = `\n╭───〔 *${category.toUpperCase()} MENU* 〕───\n│\n`;
+    let body = validCmds.map(cmd => `│ ⚡︎ *${toSmallCaps(cmd.pattern)}*`).join('\n');
+    let footer = `\n│\n╰───────────────────────\n`;
+    
     return `${title}${body}${footer}`;
 };
 
@@ -32,7 +37,7 @@ cmd({
     pattern: "menu",
     alias: ["m", "help", "allmenu"],
     category: "main",
-    react: "🎀",
+    react: "👑",
     filename: __filename
 },
 async (conn, mek, m, { from, pushname, reply }) => {
@@ -44,37 +49,37 @@ async (conn, mek, m, { from, pushname, reply }) => {
             menuSections += formatCategory(cat, catCmds);
         });
 
-        const BOT_NAME = "QUEEN-MD";
+        const BOT_NAME = config.BOT_NAME || "AHMAD-MD";
         const uptime = runtime(process.uptime());
 
-        // --- CUTE PRINCESS INTERFACE DESIGN ---
+        // --- UPGRADED PREMIUM INTERFACE DESIGN ---
         let dec = `
-╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
-  
-  👑 ‣ 𝐎𝐰𝐧𝐞𝐫  : ${config.OWNER_NAME || "Queen Owner"}
-  ⏰ ‣ 𝐔𝐩𝐭𝐢𝐦𝐞 : ${uptime}
-  📂 ‣ 𝐂𝐦𝐝𝐬   : ${Object.keys(commands).length}
-  🦋 ‣ 𝐌𝐨𝐝𝐞   : ${config.MODE || "Public"}
-  💖 ‣ 𝐒𝐭𝐚𝐭𝐮𝐬 : Active & Cute 💕
+👑 *${BOT_NAME.toUpperCase()}* 👑
 
-╰━━━━━━━━━━━━━━━━━━━━━━╯
+┌─── ❖ *SYSTEM INFO* ❖
+│ 👑 *Owner:* ${config.OWNER_NAME || "Ahmad Hassan"}
+│ ⏱️ *Uptime:* ${uptime}
+│ 📜 *Commands:* ${Object.keys(commands).length}
+│ 🌐 *Mode:* ${config.MODE || "Public"}
+│ 🖥️ *RAM:* ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB / ${(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)} GB
+└───📌
 ${menuSections}
-> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
+> *✨ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴀʜᴍᴀᴅ ʜᴀssᴀɴ ✨*`;
 
-        // Updated Custom Image Link
-        const mainImage = "https://files.catbox.moe/15j4gb.jpg";
+        // Image URL Selection
+        let imageToUse = "https://files.catbox.moe/ptvl03.jpg";
 
-        // 1. Menu Image Send
+        // 1. Menu Image Send with Caption
         await conn.sendMessage(from, { 
-            image: { url: mainImage },
-            caption: dec.trim(), 
+            image: { url: imageToUse },
+            caption: dec, 
             contextInfo: { 
                 mentionedJid: [m.sender], 
                 forwardingScore: 999, 
                 isForwarded: true, 
                 forwardedNewsletterMessageInfo: { 
-                    newsletterJid: '120363429017707564@newsletter', 
-                    newsletterName: "QUEEN-MD TECH 🦋", 
+                    newsletterJid: '120363426472060176@newsletter', 
+                    newsletterName: "AHMADTech", 
                     serverMessageId: 143 
                 } 
             } 
@@ -82,12 +87,12 @@ ${menuSections}
 
         // 2. Audio File Send
         await conn.sendMessage(from, {
-            audio: { url: "https://files.catbox.moe/hoi9ur.mp3" },
+            audio: { url: "https://files.catbox.moe/qixqzj.mp3" },
             mimetype: 'audio/mpeg',
             ptt: false
         }, { quoted: mek });
 
     } catch (e) { 
-        reply(`⚠️ Error: ${e.message}`); 
+        reply(`Error: ${e.message}`); 
     } 
 });

@@ -2,17 +2,11 @@ const { cmd, commands } = require('../command');
 const os = require("os");
 const config = require('../config');
 
-// 📌 Global Configuration
-const CHANNEL_JID = '120363429017707564@newsletter';
-const CHANNEL_NAME = "QUEEN-MD TECH 🦋";
-const MAIN_IMAGE = "https://files.catbox.moe/15j4gb.jpg";
-
 cmd({
     pattern: "alive",
-    alias: ["bot", "online"],
     desc: "Check uptime and system status",
     category: "main",
-    react: "🎀",
+    react: "🚀",
     filename: __filename
 },
 async (conn, mek, m, { from, quoted, sender, reply }) => {
@@ -32,42 +26,39 @@ async (conn, mek, m, { from, quoted, sender, reply }) => {
         const RAM = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
         const platform = os.platform();
 
-        // CUTE QUEEN INTERFACE DESIGN
-        const status = `
-╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
-  
-  👑 ‣ 𝐒𝐭𝐚𝐭𝐮𝐬   : Active & Cute 💕
-  ⏰ ‣ 𝐔𝐩𝐭𝐢𝐦𝐞   : ${uptime}
-  📟 ‣ 𝐑𝐀𝐌      : ${RAM} MB
-  💻 ‣ 𝐏𝐥𝐚𝐭𝐟𝐨𝐫𝐦 : ${platform}
-  🦋 ‣ 𝐌𝐨𝐝𝐞     : VIP Princess
+        // PROFESSIONAL DASHBOARD DESIGN
+        const status = `*╭───────────〔 ᴀʜᴍᴀᴅ-ᴍᴅ 〕──────────┈⊷*
+*│*
+*┝┤ 🤖 sᴛᴀᴛᴜs:* ᴏɴʟɪɴᴇ & ᴀᴄᴛɪᴠᴇ
+*┝┤ ⏱️ ᴜᴘᴛɪᴍᴇ:* ${uptime}
+*┝┤ 📟 ʀᴀᴍ ᴜsᴀɢᴇ:* ${RAM} ᴍʙ
+*┝┤ 💻 ᴘʟᴀᴛғᴏʀᴍ:* ${platform}
+*│*
+*╰──────────────────────────────────┈⊷*
 
-╰━━━━━━━━━━━━━━━━━━━━━━╯
+> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴀʜᴍᴀᴅ ʜᴀssᴀɴ*`;
 
-> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
-
-        // Image with Caption send karna
         await conn.sendMessage(from, { 
-            image: { url: MAIN_IMAGE },
-            caption: status.trim(),
+            text: status,
             contextInfo: {
                 mentionedJid: [sender],
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: CHANNEL_JID,
-                    newsletterName: CHANNEL_NAME,
+                    newsletterJid: '120363426472060176@newsletter',
+                    newsletterName: "AHMAD-MD TECH",
                     serverMessageId: 143
                 }
             }
         }, { quoted: mek });
 
         // ✅ Success React
-        await conn.sendMessage(from, { react: { text: '🎀', key: m.key } });
+        await conn.sendMessage(from, { react: { text: '🟢', key: m.key } });
 
     } catch (e) {
         console.error("Error in alive command:", e);
         await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
-        reply(`⚠️ System Error: ${e.message}`);
+        reply(`❌ System Error: ${e.message}`);
     }
 });
+                                               

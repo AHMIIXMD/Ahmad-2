@@ -76,7 +76,7 @@ cmd({
 │ • *Title:* ${title || 'Unknown'}
 │ • *Artist:* ${artists || 'Unknown'}
 │
-╰─「 Powered by *𝙌𝙐𝙀𝙀𝙉🦋* 」`;
+╰─「 Powered by *AHMADTechX* 」`;
 
     // Send message with contextInfo for forward tag
     await client.sendMessage(message.chat, {

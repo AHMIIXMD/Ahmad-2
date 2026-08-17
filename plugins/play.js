@@ -1,157 +1,79 @@
-// ════════════════════════════════════════════════════════
-// 🎵 PLAY / SONG COMMAND FIXED
-// ✅ Stable Audio Downloader
-// ⚡ Powered By AHMAD-MD
-// ════════════════════════════════════════════════════════
+const { cmd } = require("../command");
+const yts = require("yt-search");
+const axios = require("axios");
 
-const { cmd } = require('../command');
-const yts = require('yt-search');
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
+const API_CONFIG = {
+    AUDIO_API: Buffer.from("aHR0cHM6Ly9hcGkubmV4cmF5LmV1LmNjL2Rvd25sb2FkZXIvc2F2ZXR1YmU/dXJsPQ==", "base64").toString()
+};
+
+/**
+ * Normalizes YouTube URLs to a standard format
+ */
+function normalizeYouTubeUrl(url) {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/shorts\/|youtube\.com\/.*[?&]v=)([a-zA-Z0-9_-]{11})/);
+  return match ? `https://youtube.com/watch?v=${match[1]}` : null;
+}
+
+// --- SONG COMMAND ---
 
 cmd({
-    pattern: "play",
-    alias: ["song", "music", "play2"],
-    desc: "Download YouTube audio",
+    pattern: "song",
+    alias: ["play", "ytmp3"],
+    desc: "Download songs via name or link.",
     category: "download",
-    react: "🎵",
+    react: "🎧",
     filename: __filename
 },
-async (conn, mek, m, { from, q, reply }) => {
-
+async (conn, mek, m, { from, args, q, reply }) => {
     try {
+        if (!q) return reply("❌ Please provide a song name or YouTube link!");
 
-        // ❌ No Query
-        if (!q) {
-            return reply(
-                "🎵 Please provide a song name\n\nExample: .play Faded Alan Walker"
-            );
+        // Search Reaction
+        await conn.sendMessage(from, { react: { text: "🔎", key: mek.key } });
+
+        let videoUrl = q;
+        let vid;
+
+        // Check agar input link hai ya name
+        const isUrl = q.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g);
+
+        if (isUrl) {
+            // Agar link hai to details fetch karo
+            const search = await yts({ videoId: q.split('v=')[1] || q.split('/').pop() });
+            vid = search;
+            videoUrl = q;
+        } else {
+            // Agar naam hai to search karo
+            const search = await yts(q);
+            if (!search || !search.videos.length) return reply("❌ No results found.");
+            vid = search.videos[0];
+            videoUrl = vid.url;
         }
 
-        // 🎶 Reaction
+        // Preview Message
         await conn.sendMessage(from, {
-            react: {
-                text: "🎶",
-                key: m.key
-            }
-        });
-
-        // 🔍 Search YouTube
-        const search = await yts(q);
-
-        if (!search.videos || search.videos.length === 0) {
-
-            await conn.sendMessage(from, {
-                react: {
-                    text: "❌",
-                    key: m.key
-                }
-            });
-
-            return reply("❌ No results found");
-        }
-
-        const video = search.videos[0];
-
-        // 📥 API Request
-        const api =
-`https://jawad-tech.vercel.app/download/ytdl?url=${encodeURIComponent(video.url)}`;
-
-        const { data } = await axios.get(api, {
-            timeout: 30000
-        });
-
-        console.log("API RESPONSE:", data);
-
-        // 🎧 Audio URL Detect
-        const audioUrl =
-            data?.result?.audio ||
-            data?.result?.url ||
-            data?.audio ||
-            data?.url ||
-            data?.result?.mp3;
-
-        // ❌ No Audio
-        if (!audioUrl) {
-            throw new Error("Audio URL not found");
-        }
-
-        // 🖼️ Song Info
-        await conn.sendMessage(from, {
-            image: { url: video.thumbnail },
-            caption:
-`╭━━━〔 🎵 SONG DOWNLOADER 〕━━━⬣
-┃
-┃ 🎵 *Title:* ${video.title}
-┃ 👤 *Author:* ${video.author?.name || "Unknown"}
-┃ ⏱️ *Duration:* ${video.timestamp}
-┃ 👁️ *Views:* ${video.views.toLocaleString()}
-┃
-┃ 📥 *Status:* Downloading...
-┃
-╰━━━━━━━━━━━━━━━━━━⬣
-
-> Powered By 𝙌𝙐𝙀𝙀𝙉🦋`
+            image: { url: vid.thumbnail || vid.image },
+            caption: `╭━━〔 🎵 𝗠𝗨𝗦𝗜𝗖 𝗙𝗢𝗨𝗡𝗗 〕━━━╮\n┃ 🎧 *Title* : ${vid.title}\n┃ ⏱️ *Duration* : ${vid.timestamp || 'N/A'}\n╰━━━━━━━━━━━━━━━━━╯\n\n⏳ *Downloading audio...*`
         }, { quoted: mek });
 
-        // 📥 Download Audio Buffer
-        const audioBuffer = await axios.get(audioUrl, {
-            responseType: "arraybuffer",
-            timeout: 30000
-        });
+        // API Download (Using updated audio API)
+        const apiUrl = `${API_CONFIG.AUDIO_API}${encodeURIComponent(videoUrl)}&quality=mp3`;
+        const { data } = await axios.get(apiUrl);
 
-        // 📂 Temp File
-        const filePath = path.join(__dirname, "temp_song.mp3");
+        if (!data || !data.status || !data.result || !data.result.url) {
+            return reply("❌ API error! Try again later.");
+        }
 
-        fs.writeFileSync(filePath, audioBuffer.data);
-
-        // 🎧 Send Audio
+        // Sending Audio only
         await conn.sendMessage(from, {
-            audio: fs.readFileSync(filePath),
-            mimetype: "audio/mpeg",
-            fileName: `${video.title}.mp3`,
-            ptt: false,
-
-            contextInfo: {
-                externalAdReply: {
-                    title: video.title,
-                    body: "YouTube Audio",
-                    thumbnailUrl: video.thumbnail,
-                    sourceUrl: video.url,
-                    mediaType: 1,
-                    renderLargerThumbnail: true
-                }
-            }
-
+            audio: { url: data.result.url },
+            mimetype: "audio/mpeg"
         }, { quoted: mek });
 
-        // 🗑️ Delete Temp File
-        fs.unlinkSync(filePath);
+        await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
 
-        // ✅ Success Reaction
-        await conn.sendMessage(from, {
-            react: {
-                text: "✅",
-                key: m.key
-            }
-        });
-
-    } catch (e) {
-
-        console.log("PLAY ERROR:", e);
-
-        // ❌ Error Reaction
-        await conn.sendMessage(from, {
-            react: {
-                text: "❌",
-                key: m.key
-            }
-        });
-
-        reply("⚠️ Error while processing request");
+    } catch (err) {
+        console.error(err);
+        reply("❌ Error: " + err.message);
     }
-
 });
-
-                    
