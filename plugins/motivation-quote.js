@@ -27,7 +27,7 @@ async (conn, mek, m, { from, reply }) => {
 
 _— ${data.response.author}_
 
-_Provided by AHMAD TechXD_
+_Provided by 𝙌𝙐𝙀𝙀𝙉🦋_
 `.trim();
 
         await reply(quoteMessage);

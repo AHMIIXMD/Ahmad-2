@@ -60,8 +60,8 @@ async(conn, mek, m, {from, l, quoted, body, isCmd, command, args, q, isGroup, se
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363408512260657@newsletter',
-                        newsletterName: 'AHMADTechX',
+                        newsletterJid: '/120363429017707564@newsletter',
+                        newsletterName: '𝙌𝙐𝙀𝙀𝙉🦋',
                         serverMessageId: 143
                     }
                 }

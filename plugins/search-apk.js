@@ -37,7 +37,7 @@ cmd({
 🌐 *App Link:* ${app.link}
 🧑‍💻 *Dev Page:* ${app.link_dev}
 
-🔋 *Powered By AHMAD TechX 🇵🇰*
+🔋 *Powered By 𝙌𝙐𝙀𝙀𝙉🦋*
     `.trim();
 
     await conn.sendMessage(from, {

@@ -4,52 +4,59 @@ const { cmd, commands } = require("../command");
 const path = require('path');
 const axios = require("axios");
 
+// 📌 Global Configuration
+const CHANNEL_JID = '120363429017707564@newsletter';
+const CHANNEL_NAME = "QUEEN-MD TECH 🦋";
+const MAIN_IMAGE = "https://files.catbox.moe/15j4gb.jpg";
 
+// --- PRIVACY MENU COMMAND ---
 cmd({
     pattern: "privacy",
     alias: ["privacymenu"],
     desc: "Privacy settings menu",
     category: "setting",
-    react: "🔐",
+    react: "🎀",
     filename: __filename
 }, 
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, { from, reply }) => {
     try {
-        let privacyMenu = `╭━━〔 *Privacy Settings* 〕━━┈⊷
-┃◈╭─────────────·๏
-┃◈┃• blocklist - View blocked users
-┃◈┃• getbio - Get user's bio
-┃◈┃• setppall - Set profile pic privacy
-┃◈┃• setonline - Set online privacy
-┃◈┃• setpp - Change bot's profile pic
-┃◈┃• setmyname - Change bot's name
-┃◈┃• updatebio - Change bot's bio
-┃◈┃• groupsprivacy - Set group add privacy
-┃◈┃• getprivacy - View current privacy settings
-┃◈┃• getpp - Get user's profile picture
-┃◈┃
-┃◈┃*Options for privacy commands:*
-┃◈┃• all - Everyone
-┃◈┃• contacts - My contacts only
-┃◈┃• contact_blacklist - Contacts except blocked
-┃◈┃• none - Nobody
-┃◈┃• match_last_seen - Match last seen
-┃◈└───────────┈⊷
-╰──────────────┈⊷
-*Note:* Most commands are owner-only`;
+        let privacyMenu = `
+╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
+  
+  🔐 ‣ 𝐏𝐫𝐢𝐯𝐚𝐜𝐲 𝐒𝐞𝐭𝐭𝐢𝐧𝐠𝐬 𝐌𝐞𝐧𝐮
+  
+  🌸 ‣ \`.blocklist\` - View blocked users
+  🌸 ‣ \`.getbio\` - Get user's bio
+  🌸 ‣ \`.setppall\` - Set profile pic privacy
+  🌸 ‣ \`.setonline\` - Set online privacy
+  🌸 ‣ \`.setname\` - Change bot's name
+  🌸 ‣ \`.updatebio\` - Change bot's bio
+  🌸 ‣ \`.groupsprivacy\` - Set group add privacy
+  🌸 ‣ \`.getprivacy\` - View privacy settings
+
+  📌 *Options for privacy commands:*
+  • \`all\` - Everyone
+  • \`contacts\` - My contacts only
+  • \`contact_blacklist\` - Except blocked
+  • \`none\` - Nobody
+  • \`match_last_seen\` - Match last seen
+
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+
+> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
 
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://files.catbox.moe/7zfdcq.jpg` }, // Replace with privacy-themed image if available
-                caption: privacyMenu,
+                image: { url: MAIN_IMAGE },
+                caption: privacyMenu.trim(),
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363408512260657@newsletter',
-                        newsletterName: "Privacy Settings",
+                        newsletterJid: CHANNEL_JID,
+                        newsletterName: CHANNEL_NAME,
                         serverMessageId: 143
                     }
                 }
@@ -59,11 +66,11 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 
     } catch (e) {
         console.log(e);
-        reply(`Error: ${e.message}`);
+        reply(`⚠️ Error: ${e.message}`);
     }
 });
 
-
+// --- BLOCKLIST COMMAND ---
 cmd({
     pattern: "blocklist",
     desc: "View the list of blocked users.",
@@ -71,46 +78,71 @@ cmd({
     react: "📋",
     filename: __filename
 },
-async (conn, mek, m, { from, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 You are not the owner!*");
+async (conn, mek, m, { isCreator, reply }) => {
+    if (!isCreator) return reply("⚠️ *You are not the owner!*");
 
     try {
-        // Fetch the block list
         const blockedUsers = await conn.fetchBlocklist();
 
         if (blockedUsers.length === 0) {
             return reply("📋 Your block list is empty.");
         }
 
-        // Format the blocked users with 📌 and count the total
         const list = blockedUsers
-            .map((user, i) => `🚧 BLOCKED ${user.split('@')[0]}`) // Remove domain and add 📌
+            .map((user) => `🚧 BLOCKED: ${user.split('@')[0]}`)
             .join('\n');
 
         const count = blockedUsers.length;
-        reply(`📋 Blocked Users (${count}):\n\n${list}`);
+        
+        let blockMsg = `
+╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
+  
+  🚫 ‣ 𝐁𝐥𝐨𝐜𝐤𝐞𝐝 𝐔𝐬𝐞𝐫𝐬 : ${count}
+
+${list}
+
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+
+> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
+
+        reply(blockMsg.trim());
     } catch (err) {
         console.error(err);
-        reply(`❌ Failed to fetch block list: ${err.message}`);
+        reply(`⚠️ Failed to fetch block list: ${err.message}`);
     }
 });
 
+// --- GETBIO COMMAND ---
 cmd({
     pattern: "getbio",
     desc: "Displays the user's bio.",
     category: "setting",
+    react: "🌸",
     filename: __filename,
 }, async (conn, mek, m, { args, reply }) => {
     try {
         const jid = args[0] || mek.key.remoteJid;
         const about = await conn.fetchStatus?.(jid);
-        if (!about) return reply("No bio found.");
-        return reply(`User Bio:\n\n${about.status}`);
+        if (!about) return reply("⚠️ No bio found.");
+        
+        let bioMsg = `
+╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
+  
+  📝 ‣ 𝐔𝐬𝐞𝐫 𝐁𝐢𝐨 :
+  ${about.status}
+
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+
+> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
+
+        return reply(bioMsg.trim());
     } catch (error) {
         console.error("Error in bio command:", error);
-        reply("No bio found.");
+        reply("⚠️ No bio found.");
     }
 });
+
+// --- SET PROFILE PIC PRIVACY ---
 cmd({
     pattern: "setppall",
     desc: "Update Profile Picture Privacy",
@@ -118,23 +150,25 @@ cmd({
     react: "🔐",
     filename: __filename
 }, 
-async (conn, mek, m, { from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
-    if (!isCreator) return reply("❌ You are not the owner!");
+async (conn, mek, m, { args, isCreator, reply }) => {
+    if (!isCreator) return reply("⚠️ You are not the owner!");
     
     try {
         const value = args[0] || 'all'; 
         const validValues = ['all', 'contacts', 'contact_blacklist', 'none'];  
         
         if (!validValues.includes(value)) {
-            return reply("❌ Invalid option. Valid options are: 'all', 'contacts', 'contact_blacklist', 'none'.");
+            return reply("⚠️ Invalid option. Options: 'all', 'contacts', 'contact_blacklist', 'none'.");
         }
         
         await conn.updateProfilePicturePrivacy(value);
-        reply(`✅ Profile picture privacy updated to: ${value}`);
+        reply(`✅ Profile picture privacy updated to: \`${value}\``);
     } catch (e) {
-        return reply(`*An error occurred while processing your request.*\n\n_Error:_ ${e.message}`);
+        return reply(`⚠️ Error: ${e.message}`);
     }
 });
+
+// --- SET ONLINE PRIVACY ---
 cmd({
     pattern: "setonline",
     desc: "Update Online Privacy",
@@ -142,67 +176,69 @@ cmd({
     react: "🔐",
     filename: __filename
 }, 
-async (conn, mek, m, { from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
-    if (!isCreator) return reply("❌ You are not the owner!");
+async (conn, mek, m, { args, isCreator, reply }) => {
+    if (!isCreator) return reply("⚠️ You are not the owner!");
 
     try {
         const value = args[0] || 'all'; 
         const validValues = ['all', 'match_last_seen'];
         
         if (!validValues.includes(value)) {
-            return reply("❌ Invalid option. Valid options are: 'all', 'match_last_seen'.");
+            return reply("⚠️ Invalid option. Options: 'all', 'match_last_seen'.");
         }
 
         await conn.updateOnlinePrivacy(value);
-        reply(`✅ Online privacy updated to: ${value}`);
+        reply(`✅ Online privacy updated to: \`${value}\``);
     } catch (e) {
-        return reply(`*An error occurred while processing your request.*\n\n_Error:_ ${e.message}`);
+        return reply(`⚠️ Error: ${e.message}`);
     }
 });
 
+// --- SET NAME ---
 cmd({
     pattern: "setname",
     desc: "Set your WhatsApp display name.",
     category: "setting",
-    react: "👄",
+    react: "👑",
     filename: __filename
 },
-async (conn, mek, m, { from, isCreator, reply, args }) => {
-    if (!isCreator) return reply("❌ You are not the owner!");
+async (conn, mek, m, { isCreator, reply, args }) => {
+    if (!isCreator) return reply("⚠️ You are not the owner!");
 
     const displayName = args.join(" ");
-    if (!displayName) return reply("❌ Please provide a display name.");
+    if (!displayName) return reply("⚠️ Please provide a display name.");
 
     try {
-        // Use the existing connection (conn) - DON'T create new one!
         await conn.updateProfileName(displayName);
-        reply(`✅ Your display name has been set to: ${displayName}`);
+        reply(`✅ Display name set to: *${displayName}*`);
     } catch (err) {
         console.error(err);
-        reply("❌ Failed to set your display name.");
+        reply("⚠️ Failed to set display name.");
     }
 });
 
+// --- UPDATE BIO ---
 cmd({
     pattern: "updatebio",
-    react: "🥏",
+    react: "💖",
     desc: "Change the Bot number Bio.",
     category: "setting",
     use: '.updatebio',
     filename: __filename
 },
-async (conn, mek, m, { from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, { q, isCreator, reply }) => {
     try {
-        if (!isCreator) return reply('🚫 *You must be an Owner to use this command*');
+        if (!isCreator) return reply('⚠️ *You must be an Owner to use this command*');
         if (!q) return reply('❓ *Enter the New Bio*');
-        if (q.length > 139) return reply('❗ *Sorry! Character limit exceeded*');
+        if (q.length > 139) return reply('❗ *Character limit exceeded (Max 139)*');
         await conn.updateProfileStatus(q);
-        await conn.sendMessage(from, { text: "✔️ *New Bio Added Successfully*" }, { quoted: mek });
+        reply("✅ *New Bio Added Successfully 💕*");
     } catch (e) {
-        reply('🚫 *An error occurred!*\n\n' + e);
-        l(e);
+        reply('⚠️ Error: ' + e.message);
     }
 });
+
+// --- GROUPS PRIVACY ---
 cmd({
     pattern: "groupsprivacy",
     desc: "Update Group Add Privacy",
@@ -210,50 +246,56 @@ cmd({
     react: "🔐",
     filename: __filename
 }, 
-async (conn, mek, m, { from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
-    if (!isCreator) return reply("❌ You are not the owner!");
+async (conn, mek, m, { args, isCreator, reply }) => {
+    if (!isCreator) return reply("⚠️ You are not the owner!");
 
     try {
         const value = args[0] || 'all'; 
         const validValues = ['all', 'contacts', 'contact_blacklist', 'none'];
         
         if (!validValues.includes(value)) {
-            return reply("❌ Invalid option. Valid options are: 'all', 'contacts', 'contact_blacklist', 'none'.");
+            return reply("⚠️ Invalid option. Options: 'all', 'contacts', 'contact_blacklist', 'none'.");
         }
 
         await conn.updateGroupsAddPrivacy(value);
-        reply(`✅ Group add privacy updated to: ${value}`);
+        reply(`✅ Group add privacy updated to: \`${value}\``);
     } catch (e) {
-        return reply(`*An error occurred while processing your request.*\n\n_Error:_ ${e.message}`);
+        return reply(`⚠️ Error: ${e.message}`);
     }
 });
 
+// --- GET PRIVACY SETTINGS ---
 cmd({
     pattern: "getprivacy",
     desc: "Get the bot Number Privacy Setting Updates.",
     category: "setting",
     use: '.getprivacy',
+    react: "🔐",
     filename: __filename
 },
-async (conn, mek, m, { from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isCreator, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, { from, isCreator, reply }) => {
     try {
-        if (!isCreator) return reply('🚫 *You must be an Owner to use this command*');
+        if (!isCreator) return reply('⚠️ *You must be an Owner to use this command*');
         const duka = await conn.fetchPrivacySettings?.(true);
-        if (!duka) return reply('🚫 *Failed to fetch privacy settings*');
+        if (!duka) return reply('⚠️ *Failed to fetch privacy settings*');
         
         let puka = `
-╭───「 𝙿𝚁𝙸𝚅𝙰𝙲𝚈  」───◆  
-│ ∘ 𝚁𝚎𝚊𝚍 𝚁𝚎𝚌𝚎𝚒𝚙𝚝: ${duka.readreceipts}  
-│ ∘ 𝙿𝚛𝚘𝚏𝚒𝚕𝚎 𝙿𝚒𝚌𝚝𝚞𝚛𝚎: ${duka.profile}  
-│ ∘ 𝚂𝚝𝚊𝚝𝚞𝚜: ${duka.status}  
-│ ∘ 𝙾𝚗𝚕𝚒𝚗𝚎: ${duka.online}  
-│ ∘ 𝙻𝚊𝚜𝚝 𝚂𝚎𝚎𝚗: ${duka.last}  
-│ ∘ 𝙶𝚛𝚘𝚞𝚙 𝙿𝚛𝚒𝚟𝚊𝚌𝚢: ${duka.groupadd}  
-│ ∘ 𝙲𝚊𝚕𝚕 𝙿𝚛𝚒𝚟𝚊𝚌𝚢: ${duka.calladd}  
-╰────────────────────`;
-        await conn.sendMessage(from, { text: puka }, { quoted: mek });
+╭━━━⪨ 🎀 𝐐𝐔𝐄𝐄𝐍 𝐌𝐃 🎀 ⪩━━━╮
+  
+  ⚙️ ‣ 𝐑𝐞𝐚𝐝 𝐑𝐞𝐜𝐞𝐢𝐩𝐭 : ${duka.readreceipts}  
+  🖼️ ‣ 𝐏𝐫𝐨𝐟𝐢𝐥𝐞 𝐏𝐢𝐜   : ${duka.profile}  
+  📝 ‣ 𝐒𝐭𝐚𝐭𝐮𝐬        : ${duka.status}  
+  🟢 ‣ 𝐎𝐧𝐥𝐢𝐧𝐞        : ${duka.online}  
+  ⏱️ ‣ 𝐋𝐚𝐬𝐭 𝐒𝐞𝐞𝐧     : ${duka.last}  
+  👥 ‣ 𝐆𝐫𝐨𝐮𝐩 𝐀𝐝𝐝     : ${duka.groupadd}  
+  📞 ‣ 𝐂𝐚𝐥𝐥 𝐀𝐝𝐝      : ${duka.calladd}  
+
+╰━━━━━━━━━━━━━━━━━━━━━━╯
+
+> 🎀 *ᴘᴏᴡᴇʀᴇᴅ ʙʏ QUEEN🦋*`;
+
+        await conn.sendMessage(from, { text: puka.trim() }, { quoted: mek });
     } catch (e) {
-        reply('🚫 *An error occurred!*\n\n' + e);
-        l(e);
+        reply('⚠️ Error: ' + e.message);
     }
 });

@@ -75,7 +75,7 @@ cmd({
       `*${mediaType} Uploaded Successfully*\n\n` +
       `*Size:* ${formatBytes(mediaBuffer.length)}\n` +
       `*URL:* ${mediaUrl}\n\n` +
-      `> © Uploaded by AHMAD TechX 💜`
+      `> © Uploaded by 𝙌𝙐𝙀𝙀𝙉🦋`
     );
 
   } catch (error) {

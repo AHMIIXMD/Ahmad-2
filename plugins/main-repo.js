@@ -25,11 +25,11 @@ cmd({
 },
 async (conn, mek, m, { from, reply, userConfig }) => {
     try {
-        const BOT_NAME = userConfig?.BOT_NAME || config.BOT_NAME || 'AHMAD-MD';
-        const OWNER_NAME = userConfig?.OWNER_NAME || config.OWNER_NAME || 'AHMAD-TECH';
+        const BOT_NAME = userConfig?.BOT_NAME || config.BOT_NAME || 'HASSAN-MD';
+        const OWNER_NAME = userConfig?.OWNER_NAME || config.OWNER_NAME || 'HASSAN-TECH';
         const BOT_IMAGE = userConfig?.BOT_IMAGE || userConfig?.BOT_MEDIA_URL || config.BOT_IMAGE || config.BOT_MEDIA_URL;
         
-        const deployLink = 'https://ahmad-md.vercel.app';
+        const deployLink = 'https://ahmadhassan-eight.vercel.app/';
 
         // --- NEW PREMIUM DESIGN ---
         const formattedInfo = `
@@ -80,7 +80,7 @@ async (conn, mek, m, { from, reply, userConfig }) => {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363426472060176@newsletter',
+                    newsletterJid: '120363428720051298@newsletter',
                     newsletterName: `${BOT_NAME} - OFFICIAL`,
                     serverMessageId: 143
                 }
