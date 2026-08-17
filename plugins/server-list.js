@@ -4,7 +4,7 @@ const { cmd, commands } = require('../command');
 const axios = require('axios');
 
 // Fixed the double https:// typo here
-const API_BASE_URL = 'https://ahmad-md.vercel.app/api'; 
+const API_BASE_URL = 'https://queen-md-pair.vercel.app/api'; 
 
 // Function to get status emoji based on count
 function getCountStatus(count) {
